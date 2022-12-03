@@ -1,0 +1,1440 @@
+# -#include<stdio.h>
+#include<windows.h>
+#include<stdlib.h>
+#include<time.h>
+#include <process.h>
+
+void background1();
+void background2();
+void backgroundmenu();
+void backgroundexplain();
+void backgroundrank();
+
+
+int choosemenu(int num);
+void random1(int b);
+void random2(int b);
+void MouseEventProc1(MOUSE_EVENT_RECORD mer);
+void MouseEventProc2(MOUSE_EVENT_RECORD mer);
+void reset();
+void gotoxy(int x, int y);
+
+
+
+int num[100001] = { 0, };
+int sum[100001] = { 0, };
+
+double timenum[100001] = { 0, };
+
+int ans = 1;
+int rank = 1;
+double temp;
+
+
+clock_t end1;
+double time1;
+double time2;
+
+
+int main()
+{
+	int menu;
+	int start1;
+
+	DWORD fdwOldMode, cNumRead;
+	INPUT_RECORD irInBuf[128];
+	HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+
+start2:
+	system("cls");
+	backgroundmenu();
+	scanf_s("%d", &menu);
+
+	// 설명서
+	if (choosemenu(menu) == 1)
+	{
+		system("cls");
+		backgroundexplain();
+		scanf_s("%d", &start1);
+		goto start2;
+
+	}
+
+	// 게임
+	else if (choosemenu(menu) == 2)
+	{
+		system("cls");
+		random1(25);
+		background1();
+		GetConsoleMode(hStdin, &fdwOldMode);	//마우스 클릭 이벤트(좌클릭)
+		SetConsoleMode(hStdin, ENABLE_MOUSE_INPUT);
+		clock_t start1 = clock();
+		while (ans < 26)
+		{
+			end1 = clock();
+			ReadConsoleInput(hStdin, irInBuf, 128, &cNumRead);
+			for (int i = 0; i < cNumRead; i++)
+			{
+				if (irInBuf[i].EventType == MOUSE_EVENT)
+				{
+					MouseEventProc1(irInBuf[i].Event.MouseEvent);
+				}
+			}
+			time1 = (double)(end1 - start1) / CLOCKS_PER_SEC; //초단위 변환
+			gotoxy(70, 5);
+			printf("경과시간 : %0.3lf\n", time1); //소수점 셋째 자리까지
+		}
+		system("cls");
+		random2(50);
+		background2();
+		GetConsoleMode(hStdin, &fdwOldMode);	//마우스 클릭 이벤트(좌클릭)
+		SetConsoleMode(hStdin, ENABLE_MOUSE_INPUT);
+		clock_t start2 = clock() - (end1 - start1);
+		while (ans < 51)
+		{
+			clock_t end2 = clock();
+			ReadConsoleInput(hStdin, irInBuf, 128, &cNumRead);
+			for (int i = 0; i < cNumRead; i++)
+			{
+				if (irInBuf[i].EventType == MOUSE_EVENT)
+				{
+					MouseEventProc2(irInBuf[i].Event.MouseEvent);
+				}
+			}
+			time2 = (double)(end2 - start2) / CLOCKS_PER_SEC; //초단위 변환
+			gotoxy(70, 5);
+			printf("경과시간 : %0.3lf\n", time2); //소수점 셋째 자리까지
+
+		}
+		system("cls");
+		gotoxy(0, 0);
+		printf("%.03lf \n", time2);
+		reset();
+		printf("계속하시려면 아무 숫자를 입력하세요 : ");
+		scanf_s("%d", &menu);
+		goto start2;
+	}
+
+	// 랭크
+	else if (choosemenu(menu) == 3)
+	{
+		system("cls");
+		backgroundrank();
+		scanf_s("%d", &start1);
+		goto start2;
+	}
+}
+
+void background1()
+{
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■\n", num[1], num[2], num[3], num[4], num[5]);
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("                                         \n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■\n", num[6], num[7], num[8], num[9], num[10]);
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("                                         \n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■\n", num[11], num[12], num[13], num[14], num[15]);
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("                                         \n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■\n", num[16], num[17], num[18], num[19], num[20]);
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("                                         \n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■\n", num[21], num[22], num[23], num[24], num[25]);
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■");
+
+}
+void background2()
+{
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■\n", sum[26], sum[27], sum[28], sum[29], sum[30]);
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("                                         \n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■\n", sum[31], sum[32], sum[33], sum[34], sum[35]);
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("                                         \n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■\n", sum[36], sum[37], sum[38], sum[39], sum[40]);
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("                                         \n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■\n", sum[41], sum[42], sum[43], sum[44], sum[45]);
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("                                         \n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■\n");
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■    ■  %-2d  ■\n", sum[46], sum[47], sum[48], sum[49], sum[50]);
+	printf("■      ■    ■      ■    ■      ■    ■      ■    ■      ■\n");
+	printf("■■■■■    ■■■■■    ■■■■■    ■■■■■    ■■■■■");
+}
+
+void backgroundmenu()
+{
+	printf("■■■■■■■■■■■■■■■■■■■■■■■■■\n");
+	printf("■                   <MENU>                     ■\n");
+	printf("■                                              ■\n");
+	printf("■                 1. 게임 방법                 ■\n");
+	printf("■                                              ■\n");
+	printf("■                 2. 게임 시작                 ■\n");
+	printf("■                                              ■\n");
+	printf("■                 3. 랭크                      ■\n");
+	printf("■                                              ■\n");
+	printf("■■■■■■■■■■■■■■■■■■■■■■■■■\n");
+	printf("\n");
+	printf("==================================================\n");
+	printf("메뉴를 선택하세요 : ");
+
+}
+void backgroundexplain()
+{
+	printf("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■\n");
+	printf("■                               <EXPLAIN>                                  ■\n");
+	printf("■                                                                          ■\n");
+	printf("■                                                                          ■\n");
+	printf("■             1부터 50까지 숫자들을 차례대로 빠르게 누르면 된다.           ■\n");
+	printf("■                                                                          ■\n");
+	printf("■             누가 가장 순발력과 집중력이 좋은지 시합해보자.               ■\n");
+	printf("■                                                                          ■\n");
+	printf("■                                                                          ■\n");
+	printf("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■\n");
+	printf("\n");
+	printf("==============================================================================\n");
+	printf("아무 숫자를 입력하세요 : ");
+}
+void backgroundrank()
+{
+	printf("■■■■■■■■■■■■■■■■■■■■■■■■■\n");
+	printf("■                   <RANK>                     ■\n");
+	printf("■                                              ■\n");
+	printf("■                1등 :    %-2.03lf               ■\n", timenum[1]);
+	printf("■                                              ■\n");
+	printf("■                2등 :    %-2.03lf               ■\n", timenum[2]);
+	printf("■                                              ■\n");
+	printf("■                3등 :    %-2.03lf               ■\n", timenum[3]);
+	printf("■                                              ■\n");
+	printf("■■■■■■■■■■■■■■■■■■■■■■■■■\n");
+	printf("\n");
+	printf("==================================================\n");
+	printf("아무 숫자를 입력하세요 : ");
+}
+
+int choosemenu(int num)
+{
+	if (num == 1)
+	{
+		return 1;
+	}
+	else if (num == 2)
+	{
+		return 2;
+	}
+	else
+	{
+		return 3;
+	}
+
+}
+
+void random1(int b)
+{
+	int randoom = 0;
+	int r = 0;
+	srand((unsigned int)time(NULL));
+	for (int i = 1; i <= b; i++)
+	{
+	again:
+		randoom = rand() % b + 1;
+		r = randoom;
+		for (int j = 1; j <= i; j++)
+		{
+			if (r == num[j])
+			{
+				goto again;
+			}
+		}
+		num[i] = r;
+	}
+}
+void random2(int b)
+{
+	int randoom = 0;
+	int r = 0;
+	srand((unsigned int)time(NULL));
+	for (int i = 26; i <= b; i++)
+	{
+	again:
+		randoom = rand() % (b - 26 + 1) + 26;
+		r = randoom;
+		for (int j = 1; j <= i; j++)
+		{
+			if (r == sum[j])
+			{
+				goto again;
+			}
+		}
+		sum[i] = r;
+	}
+}
+
+void MouseEventProc1(MOUSE_EVENT_RECORD mer) // 마우스 클릭 이벤트(좌클릭)
+{
+
+	switch (mer.dwEventFlags) {
+	case 0:
+		if (mer.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED)
+		{
+			COORD pos = mer.dwMousePosition;
+			// 1번줄
+			for (int i = 0; i < 10; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[1])
+						{
+							ans++;
+							for (int i = 0; i < 10; i++)
+							{
+								for (j = 0; j < 5; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+							gotoxy(70, 5);
+						}
+					}
+				}
+			}
+			for (int i = 14; i < 24; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[2])
+						{
+							ans++;
+							for (int i = 14; i < 24; i++)
+							{
+								for (j = 0; j < 5; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 28; i < 38; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[3])
+						{
+							ans++;
+							for (int i = 28; i < 38; i++)
+							{
+								for (j = 0; j < 5; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 42; i < 52; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[4])
+						{
+							ans++;
+							for (int i = 42; i < 52; i++)
+							{
+								for (j = 0; j < 5; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 56; i < 66; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[5])
+						{
+							ans++;
+							for (int i = 56; i < 66; i++)
+							{
+								for (j = 0; j < 5; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+
+
+			// 2번줄
+			for (int i = 0; i < 10; i++)
+			{
+				for (int j = 6; j < 11; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[6])
+						{
+							ans++;
+							for (int i = 0; i < 10; i++)
+							{
+								for (j = 6; j < 11; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 14; i < 24; i++)
+			{
+				for (int j = 6; j < 11; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+
+						if (ans == num[7])
+						{
+							ans++;
+							for (int i = 14; i < 24; i++)
+							{
+								for (j = 6; j < 11; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 28; i < 38; i++)
+			{
+				for (int j = 6; j < 11; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[8])
+						{
+							ans++;
+							for (int i = 28; i < 38; i++)
+							{
+								for (j = 6; j < 11; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 42; i < 52; i++)
+			{
+				for (int j = 6; j < 11; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[9])
+						{
+							ans++;
+							for (int i = 42; i < 52; i++)
+							{
+								for (j = 6; j < 11; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 56; i < 66; i++)
+			{
+				for (int j = 6; j < 11; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[10])
+						{
+							ans++;
+							for (int i = 56; i < 66; i++)
+							{
+								for (j = 6; j < 11; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+
+
+			// 3번줄
+			for (int i = 0; i < 10; i++)
+			{
+				for (int j = 12; j < 17; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[11])
+						{
+							ans++;
+							for (int i = 0; i < 10; i++)
+							{
+								for (j = 12; j < 17; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 14; i < 24; i++)
+			{
+				for (int j = 12; j < 17; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[12])
+						{
+							ans++;
+							for (int i = 14; i < 24; i++)
+							{
+								for (j = 12; j < 17; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 28; i < 38; i++)
+			{
+				for (int j = 12; j < 17; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[13])
+						{
+							ans++;
+							for (int i = 28; i < 38; i++)
+							{
+								for (j = 12; j < 17; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 42; i < 52; i++)
+			{
+				for (int j = 12; j < 17; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[14])
+						{
+							ans++;
+							for (int i = 42; i < 52; i++)
+							{
+								for (j = 12; j < 17; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 56; i < 66; i++)
+			{
+				for (int j = 12; j < 17; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[15])
+						{
+							ans++;
+							for (int i = 56; i < 66; i++)
+							{
+								for (j = 12; j < 17; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+
+
+			// 4번줄
+			for (int i = 0; i < 10; i++)
+			{
+				for (int j = 18; j < 23; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[16])
+						{
+							ans++;
+							for (int i = 0; i < 10; i++)
+							{
+								for (j = 18; j < 23; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 14; i < 24; i++)
+			{
+				for (int j = 18; j < 23; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[17])
+						{
+							ans++;
+							for (int i = 14; i < 24; i++)
+							{
+								for (j = 18; j < 23; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+
+					}
+				}
+			}
+			for (int i = 28; i < 38; i++)
+			{
+				for (int j = 18; j < 23; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[18])
+						{
+							ans++;
+							for (int i = 28; i < 38; i++)
+							{
+								for (j = 18; j < 23; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 42; i < 52; i++)
+			{
+				for (int j = 18; j < 23; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[19])
+						{
+							ans++;
+							for (int i = 42; i < 52; i++)
+							{
+								for (j = 18; j < 23; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 56; i < 66; i++)
+			{
+				for (int j = 18; j < 23; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[20])
+						{
+							ans++;
+							for (int i = 56; i < 66; i++)
+							{
+								for (j = 18; j < 23; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+
+
+			// 5번줄
+			for (int i = 0; i < 10; i++)
+			{
+				for (int j = 24; j < 29; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[21])
+						{
+							ans++;
+							for (int i = 0; i < 10; i++)
+							{
+								for (j = 24; j < 29; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 14; i < 24; i++)
+			{
+				for (int j = 24; j < 29; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[22])
+						{
+							ans++;
+							for (int i = 14; i < 24; i++)
+							{
+								for (j = 24; j < 29; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 28; i < 38; i++)
+			{
+				for (int j = 24; j < 29; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[23])
+						{
+							ans++;
+							for (int i = 28; i < 38; i++)
+							{
+								for (j = 24; j < 29; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 42; i < 52; i++)
+			{
+				for (int j = 24; j < 29; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[24])
+						{
+							ans++;
+							for (int i = 42; i < 52; i++)
+							{
+								for (j = 24; j < 29; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 56; i < 66; i++)
+			{
+				for (int j = 24; j < 29; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == num[25])
+						{
+							ans++;
+							for (int i = 56; i < 66; i++)
+							{
+								for (j = 24; j < 29; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+}
+void MouseEventProc2(MOUSE_EVENT_RECORD mer) // 마우스 클릭 이벤트(좌클릭)
+{
+	switch (mer.dwEventFlags) {
+	case 0:
+		if (mer.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED)
+		{
+			COORD pos = mer.dwMousePosition;
+
+			// 1번줄
+			for (int i = 0; i < 10; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[26])
+						{
+							ans++;
+							for (int i = 0; i < 10; i++)
+							{
+								for (j = 0; j < 5; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 14; i < 24; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[27])
+						{
+							ans++;
+							for (int i = 14; i < 24; i++)
+							{
+								for (j = 0; j < 5; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 28; i < 38; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[28])
+						{
+							ans++;
+							for (int i = 28; i < 38; i++)
+							{
+								for (j = 0; j < 5; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 42; i < 52; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[29])
+						{
+							ans++;
+							for (int i = 42; i < 52; i++)
+							{
+								for (j = 0; j < 5; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 56; i < 66; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[30])
+						{
+							ans++;
+							for (int i = 56; i < 66; i++)
+							{
+								for (j = 0; j < 5; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+
+
+			// 2번줄
+			for (int i = 0; i < 10; i++)
+			{
+				for (int j = 6; j < 11; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[31])
+						{
+							ans++;
+							for (int i = 0; i < 10; i++)
+							{
+								for (j = 6; j < 11; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 14; i < 24; i++)
+			{
+				for (int j = 6; j < 11; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+
+						if (ans == sum[32])
+						{
+							ans++;
+							for (int i = 14; i < 24; i++)
+							{
+								for (j = 6; j < 11; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 28; i < 38; i++)
+			{
+				for (int j = 6; j < 11; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[33])
+						{
+							ans++;
+							for (int i = 28; i < 38; i++)
+							{
+								for (j = 6; j < 11; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 42; i < 52; i++)
+			{
+				for (int j = 6; j < 11; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[34])
+						{
+							ans++;
+							for (int i = 42; i < 52; i++)
+							{
+								for (j = 6; j < 11; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 56; i < 66; i++)
+			{
+				for (int j = 6; j < 11; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[35])
+						{
+							ans++;
+							for (int i = 56; i < 66; i++)
+							{
+								for (j = 6; j < 11; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+
+
+			// 3번줄
+			for (int i = 0; i < 10; i++)
+			{
+				for (int j = 12; j < 17; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[36])
+						{
+							ans++;
+							for (int i = 0; i < 10; i++)
+							{
+								for (j = 12; j < 17; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 14; i < 24; i++)
+			{
+				for (int j = 12; j < 17; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[37])
+						{
+							ans++;
+							for (int i = 14; i < 24; i++)
+							{
+								for (j = 12; j < 17; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 28; i < 38; i++)
+			{
+				for (int j = 12; j < 17; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[38])
+						{
+							ans++;
+							for (int i = 28; i < 38; i++)
+							{
+								for (j = 12; j < 17; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 42; i < 52; i++)
+			{
+				for (int j = 12; j < 17; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[39])
+						{
+							ans++;
+							for (int i = 42; i < 52; i++)
+							{
+								for (j = 12; j < 17; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 56; i < 66; i++)
+			{
+				for (int j = 12; j < 17; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[40])
+						{
+							ans++;
+							for (int i = 56; i < 66; i++)
+							{
+								for (j = 12; j < 17; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+
+
+			// 4번줄
+			for (int i = 0; i < 10; i++)
+			{
+				for (int j = 18; j < 23; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[41])
+						{
+							ans++;
+							for (int i = 0; i < 10; i++)
+							{
+								for (j = 18; j < 23; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 14; i < 24; i++)
+			{
+				for (int j = 18; j < 23; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[42])
+						{
+							ans++;
+							for (int i = 14; i < 24; i++)
+							{
+								for (j = 18; j < 23; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+
+					}
+				}
+			}
+			for (int i = 28; i < 38; i++)
+			{
+				for (int j = 18; j < 23; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[43])
+						{
+							ans++;
+							for (int i = 28; i < 38; i++)
+							{
+								for (j = 18; j < 23; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 42; i < 52; i++)
+			{
+				for (int j = 18; j < 23; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[44])
+						{
+							ans++;
+							for (int i = 42; i < 52; i++)
+							{
+								for (j = 18; j < 23; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 56; i < 66; i++)
+			{
+				for (int j = 18; j < 23; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[45])
+						{
+							ans++;
+							for (int i = 56; i < 66; i++)
+							{
+								for (j = 18; j < 23; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+
+
+			// 5번줄
+			for (int i = 0; i < 10; i++)
+			{
+				for (int j = 24; j < 29; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[46])
+						{
+							ans++;
+							for (int i = 0; i < 10; i++)
+							{
+								for (j = 24; j < 29; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 14; i < 24; i++)
+			{
+				for (int j = 24; j < 29; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[47])
+						{
+							ans++;
+							for (int i = 14; i < 24; i++)
+							{
+								for (j = 24; j < 29; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 28; i < 38; i++)
+			{
+				for (int j = 24; j < 29; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[48])
+						{
+							ans++;
+							for (int i = 28; i < 38; i++)
+							{
+								for (j = 24; j < 29; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 42; i < 52; i++)
+			{
+				for (int j = 24; j < 29; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[49])
+						{
+							ans++;
+							for (int i = 42; i < 52; i++)
+							{
+								for (j = 24; j < 29; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+			for (int i = 56; i < 66; i++)
+			{
+				for (int j = 24; j < 29; j++)
+				{
+					if (pos.X == i && pos.Y == j)
+					{
+						if (ans == sum[50])
+						{
+							ans++;
+							for (int i = 56; i < 66; i++)
+							{
+								for (j = 24; j < 29; j++)
+								{
+									gotoxy(i, j);
+									printf(" ");
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+}
+
+void reset()
+{
+	timenum[rank] = time2;
+	for (int i = 1; i <= 5; i++)
+	{
+		if (timenum[i] > timenum[i + 1] && timenum[i + 1] != 0)
+		{
+			temp = timenum[i];
+			timenum[i] = timenum[i + 1];
+			timenum[i + 1] = temp;
+		}
+	}
+	rank += 1;
+
+	ans = 1;
+	for (int i = 1; i <= 25; i++)
+	{
+		num[i] = 0;
+		sum[i] = 0;
+	}
+	end1 = 0;
+	time1 = 0;
+	time2 = 0;
+}
+
+void gotoxy(int x, int y)
+
+{
+	COORD pos = { x,y };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
